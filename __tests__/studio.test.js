@@ -6,7 +6,7 @@ const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Studio = require('../lib/models/Studio');
 
-describe('film routes', () => {
+describe('studio routes', () => {
   beforeAll(() => {
     connect();
   });
@@ -109,7 +109,6 @@ describe('film routes', () => {
       .patch(`/api/v1/studios/${studio._id}`)
       .send({ name: 'Twisted Productions' })
       .then(res => {
-        console.log(res.body);
         expect(res.body).toEqual({
           _id: expect.any(String),
           name: 'Twisted Productions',
