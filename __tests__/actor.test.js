@@ -35,7 +35,7 @@ describe('actor routes', () => {
       .post('/api/v1/actors')
       .send({
         name: 'Tom Hanks',
-        dob: 1956-6-9,
+        dob: 1956060./9,
         pob: 'California'
       })
       .then(res => {
