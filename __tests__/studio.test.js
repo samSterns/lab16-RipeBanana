@@ -5,6 +5,8 @@ const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Studio = require('../lib/models/Studio');
+const Film = require('../lib/models/Film');
+const Actor = require('../lib/models/Actor');
 
 describe('studio routes', () => {
   beforeAll(() => {
@@ -16,17 +18,25 @@ describe('studio routes', () => {
   });
 
   let studio;
+  let actor;
 
   beforeEach(async() => {
     studio = await Studio.create({
       name: 'MGM',
-      address: {
-        city: 'Hollywood',
-        state: 'California',
-        country: 'United States'
-      }
+      address: { city: 'Hollywood', state: 'California', country: 'United States' }
     });
-    // create film.create 
+    actor = await Actor.create({
+      name: 'Tom Hanks',
+      dob: 19560609,
+      pob: 'California'
+    });
+    await Film.create({
+      title: 'Toy Story',
+      studioId: studio._id,
+      released: 1995, 
+      cast: [{ role: 'Woody', actor: actor._id }]
+    });
+    
   });
 
   afterAll(() => {
@@ -99,6 +109,7 @@ describe('studio routes', () => {
             state: 'California',
             country: 'United States'
           },
+          films: [{ _id:expect.any(String), title: 'Toy Story' }],
           __v: 0
         });
       });
@@ -117,6 +128,7 @@ describe('studio routes', () => {
             state: 'California',
             country: 'United States'
           },
+
           __v: 0
         });
       });

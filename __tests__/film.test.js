@@ -5,6 +5,7 @@ const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
 const Film = require('../lib/models/Film');
+const Studio = require('../lib/models/Studio');
 
 describe('film routes', () => {
   beforeAll(() => {
@@ -16,15 +17,28 @@ describe('film routes', () => {
   });
 
   let film;
+  let studio;
+  let actor; 
 
   beforeEach(async() => {
+    
+    studio = await Studio.create({
+      name: 'MGM',
+      address: { city: 'Hollywood', state: 'California', country: 'United States' }
+    });
+
+    actor = await Actor.create({
+      name: 'Tom Hanks',
+      dob: 19560609,
+      pob: 'California'
+    });
+    
     film = await Film.create({
       title: 'Toy Story',
-      studioId: mongoose.Schema.Types.ObjectId,
+      studioId: studio._id,
       released: 1995, 
-      cast: [{ role: 'Woody' }, { actor: mongoose.Schema.Types.ObjectId }]
+      cast: [{ role: 'Woody' }, { actor._id }]
     });
-    // create film.create 
   });
 
   afterAll(() => {
@@ -54,9 +68,21 @@ describe('film routes', () => {
 
   it('gets all films', async() => {
     const films = await Film.create([
-      { name: 'Randy', company: 'Ripe Bananas' },
-      { name: 'Ramon', company: 'Ripe Bananas' },
-      { name: 'Roger', company: 'Ripe Bananas' },
+      { title: 'Toy Story',
+        studioId: studio._id,
+        released: 1995, 
+        cast: [{ role: 'Woody' }, { actor: mongoose.Schema.Types.ObjectId }]
+      }, {
+        title: 'Toy Story 2',
+        studioId: studio._id,
+        released: 1997, 
+        cast: [{ role: 'Woody' }, { actor: mongoose.Schema.Types.ObjectId }]
+      }, {
+        title: 'Toy Story 3',
+        studioId: studio._id,
+        released: 2002, 
+        cast: [{ role: 'Woody' }, { actor: mongoose.Schema.Types.ObjectId }] 
+      }
     ]);
       
     return request(app)
@@ -78,8 +104,10 @@ describe('film routes', () => {
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String), 
-          name: 'Randy',
-          company: 'Ripe Bananas',
+          title: 'Toy Story',
+          studioId: studio._id,
+          released: 1995, 
+          cast: [{ role: 'Woody' }, { actor: mongoose.Schema.Types.ObjectId }],
           __v: 0,
         });
       });
@@ -88,13 +116,15 @@ describe('film routes', () => {
   it('updates a film by id', async() => {
     return request(app)
       .patch(`/api/v1/films/${film._id}`)
-      .send({ name: 'Rachel' })
+      .send({ name: 'Toy Story 4' })
       .then(res => {
         expect(res.body).toEqual({
-          _id: expect.any(String),
-          name: 'Rachel',
-          company: 'Ripe Bananas',
-          __v: 0
+          _id: expect.any(String), 
+          title: 'Toy Story 4',
+          studioId: studio._id,
+          released: 1995, 
+          cast: [{ role: 'Woody' }, { actor: mongoose.Schema.Types.ObjectId }],
+          __v: 0,
         });
       });
   });
@@ -104,10 +134,12 @@ describe('film routes', () => {
       .delete(`/api/v1/films/${film._id}`)
       .then(res => {
         expect(res.body).toEqual({
-          _id: expect.any(String),
-          name: 'Randy',
-          company: 'Ripe Bananas',
-          __v: 0
+          _id: expect.any(String), 
+          title: 'Toy Story',
+          studioId: studio._id,
+          released: 1995, 
+          cast: [{ role: 'Woody' }, { actor: mongoose.Schema.Types.ObjectId }],
+          __v: 0,
         });
         return Film.find();
       })
