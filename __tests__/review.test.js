@@ -1,12 +1,12 @@
 require('dotenv').config();
 
 const request = require('supertest');
-const app = require('../lib/app.js');
+const app = require('../lib/app');
 const connect = require('../lib/utils/connect');
 const mongoose = require('mongoose');
-const Reviewer = require('../lib/models/Reviewer');
+const Review = require('../lib/models/Review');
 
-describe('reviewer routes', () => {
+describe('review routes', () => {
   beforeAll(() => {
     connect();
   });
@@ -15,60 +15,66 @@ describe('reviewer routes', () => {
     return mongoose.connection.dropDatabase();
   });
 
-  let reviewer;
+  let review;
 
   beforeEach(async() => {
-    reviewer = await Reviewer.create({
-      name: 'Randy',
-      company: 'Ripe Bananas'
+    review = await Review.create({
+      title: 'Toy Story',
+      studioId: mongoose.Schema.Types.ObjectId,
+      released: 1995, 
+      cast: [{ role: 'Woody' }, { actor: mongoose.Schema.Types.ObjectId }]
     });
-    // create film.create 
+    // create review.create 
   });
 
   afterAll(() => {
     return mongoose.connection.close();
   });
   
-  it('creates a reviewer', () => {
+  it('creates a review', () => {
     return request(app)
-      .post('/api/v1/reviewers')
+      .post('/api/v1/reviews')
       .send({
-        name: 'Randy',
-        company: 'Ripe Bananas'
+        rating: 4,
+        reviewerId: reviewer._id,
+        review: 'It made me cry',
+        filmId: film._id
       })
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
-          name: 'Randy',
-          company: 'Ripe Bananas',
+          rating: 4,
+          reviewerId: reviewer._id,
+          review: 'It made me cry',
+          filmId: film._id,
           __v: 0
         });
       });
   });
 
-  it('gets all reviewers', async() => {
-    const reviewers = await Reviewer.create([
+  it('gets all reviews', async() => {
+    const reviews = await Review.create([
       { name: 'Randy', company: 'Ripe Bananas' },
       { name: 'Ramon', company: 'Ripe Bananas' },
       { name: 'Roger', company: 'Ripe Bananas' },
     ]);
       
     return request(app)
-      .get('/api/v1/reviewers')
+      .get('/api/v1/reviews')
       .then(res => {
-        reviewers.forEach(reviewer => {
+        reviews.forEach(film => {
           expect(res.body).toContainEqual({
-            _id: reviewer._id.toString(),
-            name: reviewer.name
+            _id: film._id.toString(),
+            name: film.name
           });
         });
       });
 
   });
 
-  it('get reviewer by Id', async() => {
+  it('get review by Id', async() => {
     return request(app)
-      .get(`/api/v1/reviewers/${reviewer._id}`)
+      .get(`/api/v1/reviews/${review._id}`)
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String), 
@@ -79,9 +85,9 @@ describe('reviewer routes', () => {
       });
   });
 
-  it('updates a reviewer by id', async() => {
+  it('updates a review by id', async() => {
     return request(app)
-      .patch(`/api/v1/reviewers/${reviewer._id}`)
+      .patch(`/api/v1/reviews/${review._id}`)
       .send({ name: 'Rachel' })
       .then(res => {
         expect(res.body).toEqual({
@@ -93,9 +99,9 @@ describe('reviewer routes', () => {
       });
   });
 
-  it('deletes a reviewer by id', async() => {
+  it('deletes a review by id', async() => {
     return request(app)
-      .delete(`/api/v1/reviewers/${reviewer._id}`)
+      .delete(`/api/v1/reviews/${review._id}`)
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
@@ -103,10 +109,10 @@ describe('reviewer routes', () => {
           company: 'Ripe Bananas',
           __v: 0
         });
-        return Reviewer.find();
+        return Review.find();
       })
-      .then(reviewer =>{
-        expect(reviewer).toHaveLength(0);
+      .then(film =>{
+        expect(film).toHaveLength(0);
       });
   });
 }); 
