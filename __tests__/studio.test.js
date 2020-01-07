@@ -109,7 +109,7 @@ describe('studio routes', () => {
             state: 'California',
             country: 'United States'
           },
-          films: [{ _id:expect.any(String), title: 'Toy Story' }],
+          films: [{ _id:expect.any(String), title: 'Toy Story', studioId: studio._id.toString() }],
           __v: 0
         });
       });
