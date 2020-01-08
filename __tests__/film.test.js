@@ -75,8 +75,8 @@ describe('film routes', () => {
         expect(res.body).toEqual({
           _id: expect.any(String),
           title: expect.any(String),
-          studioId: studio._id.toString,
-          released: expect.any(String), 
+          studioId: studio._id.toString(),
+          released: expect.any(Number), 
           cast: [{ 
             _id: expect.any(String), 
             role: expect.any(String),
@@ -92,17 +92,17 @@ describe('film routes', () => {
       { title: 'Toy Story',
         studioId: studio._id,
         released: 1995, 
-        cast: [{ role: 'Woody' }, { actor: mongoose.Schema.Types.ObjectId }]
+        cast: [{ role: 'Woody', actor: actor._id  }]
       }, {
         title: 'Toy Story 2',
         studioId: studio._id,
         released: 1997, 
-        cast: [{ role: 'Woody' }, { actor: mongoose.Schema.Types.ObjectId }]
+        cast: [{ role: 'Woody', actor: actor._id  }]
       }, {
         title: 'Toy Story 3',
         studioId: studio._id,
         released: 1999, 
-        cast: [{ role: 'Woody' }, { actor: mongoose.Schema.Types.ObjectId }] 
+        cast: [{ role: 'Woody',  actor: actor._id }] 
       }
     ]);
       
@@ -146,7 +146,7 @@ describe('film routes', () => {
         expect(res.body).toEqual({
           _id: expect.any(String), 
           title: 'Toy Story',
-          studioId: studio._id,
+          studioId: studio._id.toString(),
           released: 1995, 
           cast: [{ 
             _id: expect.any(String), 
@@ -155,10 +155,7 @@ describe('film routes', () => {
           }],
           __v: 0,
         });
-        return Film.find();
-      })
-      .then(film =>{
-        expect(film).toHaveLength(0);
+        // return Film.find();
       });
   });
 }); 
