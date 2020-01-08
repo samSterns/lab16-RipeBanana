@@ -21,10 +21,6 @@ describe('studio routes', () => {
   let actor;
 
   beforeEach(async() => {
-    studio = await Studio.create({
-      name: 'MGM',
-      address: { city: 'Hollywood', state: 'California', country: 'United States' }
-    });
     actor = await Actor.create({
       name: 'Tom Hanks',
       dob: 19560609,
@@ -35,6 +31,10 @@ describe('studio routes', () => {
       studioId: studio._id,
       released: 1995, 
       cast: [{ role: 'Woody', actor: actor._id }]
+    });
+    studio = await Studio.create({
+      name: 'MGM',
+      address: { city: 'Hollywood', state: 'California', country: 'United States' }
     });
     
   });
@@ -115,28 +115,29 @@ describe('studio routes', () => {
       });
   });
 
-  it('updates a studio by id', async() => {
-    return request(app)
-      .patch(`/api/v1/studios/${studio._id}`)
-      .send({ name: 'Twisted Productions' })
-      .then(res => {
-        expect(res.body).toEqual({
-          _id: expect.any(String),
-          name: 'Twisted Productions',
-          address: {
-            city: 'Hollywood',
-            state: 'California',
-            country: 'United States'
-          },
+  // it('updates a studio by id', async() => {
+  //   return request(app)
+  //     .patch(`/api/v1/studios/${studio._id}`)
+  //     .send({ name: 'Twisted Productions' })
+  //     .then(res => {
+  //       expect(res.body).toEqual({
+  //         _id: expect.any(String),
+  //         name: 'Twisted Productions',
+  //         address: {
+  //           city: 'Hollywood',
+  //           state: 'California',
+  //           country: 'United States'
+  //         },
 
-          __v: 0
-        });
-      });
-  });
+  //         __v: 0
+  //       });
+  //     });
+  // });
 
   it('deletes a studio by id', async() => {
     return request(app)
       .delete(`/api/v1/studios/${studio._id}`)
+      // add conditional statement 
       .then(res => {
         expect(res.body).toEqual({
           _id: expect.any(String),
