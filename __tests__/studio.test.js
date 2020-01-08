@@ -19,6 +19,7 @@ describe('studio routes', () => {
 
   let studio;
   let actor;
+  let film;
 
   beforeEach(async() => {
     actor = await Actor.create({
@@ -26,15 +27,15 @@ describe('studio routes', () => {
       dob: 19560609,
       pob: 'California'
     });
-    await Film.create({
+    studio = await Studio.create({
+      name: 'MGM',
+      address: { city: 'Hollywood', state: 'California', country: 'United States' }
+    });
+    film = await Film.create({
       title: 'Toy Story',
       studioId: studio._id,
       released: 1995, 
       cast: [{ role: 'Woody', actor: actor._id }]
-    });
-    studio = await Studio.create({
-      name: 'MGM',
-      address: { city: 'Hollywood', state: 'California', country: 'United States' }
     });
     
   });
