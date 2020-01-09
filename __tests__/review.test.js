@@ -46,7 +46,6 @@ describe('review routes', () => {
   });
 
   it('get review by Id', async() => {
-    const reviewer = await getReviewer(); 
     const review = await getReview(); 
   
     return request(app)
