@@ -1,6 +1,6 @@
 const { getReview, getReviews } = require('../lib/helpers/data-helpers');
-const { getFilm, getFilms } = require('../lib/helpers/data-helpers');
-const { getReviewer, getReviewers } = require('../lib/helpers/data-helpers');
+const { getFilm } = require('../lib/helpers/data-helpers');
+const { getReviewer } = require('../lib/helpers/data-helpers');
 
 const request = require('supertest');
 const app = require('../lib/app');
